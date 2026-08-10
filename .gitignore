@@ -1,0 +1,9 @@
+node_modules/
+dist/
+data/workspaces/*
+data/reports/*
+data/agent-runs/*
+!.gitkeep
+.env
+.env.local
+npm-debug.log*

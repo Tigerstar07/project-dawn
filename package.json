@@ -1,0 +1,23 @@
+{
+  "name": "project-dawn",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local AI workspace and passive web security scanner prototype.",
+  "scripts": {
+    "dev": "node server/index.js",
+    "build": "vite build",
+    "start": "node server/index.js --prod",
+    "agent:long": "node scripts/dawn-long-run.js",
+    "agent:code": "node scripts/dawn-long-run.js --allow-project-edits --allow-shell --project-root ."
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vite": "^8.0.16"
+  }
+}
