@@ -17,7 +17,7 @@ import { analyzeActiveLab } from "./checks/activeLab.js";
 import { analyzeTransport } from "./checks/transport.js";
 import { analyzeVersionIntel } from "./checks/versionIntel.js";
 import { createMarkdownReport } from "../reports/markdownReport.js";
-import { annotateFindings, tierRank } from "../impact.js";
+import { annotateFindings, tierRank } from "./impact.js";
 
 const CHECKS = {
   transport: analyzeTransport,
