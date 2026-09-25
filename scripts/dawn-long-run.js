@@ -69,7 +69,7 @@ const c = makeColors();
 let stopping = false;
 process.on("SIGINT", () => {
   stopping = true;
-  console.log(c.dim("\n\nStop requested — finishing current step and saving state..."));
+  console.log(c.dim("\n\nStop requested, finishing current step and saving state..."));
 });
 
 banner();
@@ -276,7 +276,7 @@ async function chatOllama(opts) {
       if (attempt < retries) {
         const wait = 1500 * attempt;
         console.log(
-          c.yellow(`  model call failed (attempt ${attempt}/${retries}): ${describeError(err)} — retrying in ${wait / 1000}s`)
+          c.yellow(`  model call failed (attempt ${attempt}/${retries}): ${describeError(err)}, retrying in ${wait / 1000}s`)
         );
         await sleep(wait);
       }
@@ -409,7 +409,7 @@ async function executeDecision(decision) {
     if (!rel) return { summary: "edit_file requires a path." };
     const target = resolveScoped(scope, rel, { forWrite: true });
     const before = await readFile(target, "utf8").catch(() => null);
-    if (before === null) return { summary: `Cannot edit ${scope}:${rel} — file not found.` };
+    if (before === null) return { summary: `Cannot edit ${scope}:${rel}, file not found.` };
     if (typeof decision.find === "string" && decision.find.length) {
       const occurrences = before.split(decision.find).length - 1;
       if (occurrences === 0) {
@@ -447,7 +447,7 @@ async function executeDecision(decision) {
     const results = await webSearch(query);
     const file = `files/search-${Date.now()}.md`;
     await writeFile(path.join(root, file), renderSearchResults(query, results), "utf8");
-    return { summary: `Searched "${query}" — ${results.length} results → ${file}`, file };
+    return { summary: `Searched "${query}", ${results.length} results → ${file}`, file };
   }
 
   if (action === "fetch_url") {
@@ -818,11 +818,11 @@ function makeColors() {
 }
 
 function banner() {
-  console.log(c.bold("Project Dawn — long run"));
+  console.log(c.bold("Project Dawn: long run"));
   console.log(`  Workspace:    ${root}`);
   console.log(`  Model:        ${model}  (ctx ${numCtx}, keep-alive ${keepAlive})`);
   console.log(`  Iterations:   ${iterations}`);
-  console.log(`  Web:          ${allowWeb ? `enabled — ${webProviderName()}` : "disabled"}`);
+  console.log(`  Web:          ${allowWeb ? `enabled, ${webProviderName()}` : "disabled"}`);
   console.log(`  Shell:        ${allowShell ? "enabled" : "disabled"}`);
   console.log(`  Project edits:${allowProjectEdits ? ` enabled → ${projectRoot}` : " disabled (read-only)"}`);
   console.log(`  Timeouts:     idle ${idleTimeoutMs / 1000}s, ceiling ${maxTimeoutMs / 1000}s, retries ${retries}`);

@@ -12,6 +12,7 @@
     "agent:code": "node scripts/dawn-long-run.js --allow-project-edits --allow-shell --project-root ."
   },
   "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
     "@vitejs/plugin-react": "^5.0.4",
     "cors": "^2.8.5",
     "express": "^5.1.0",

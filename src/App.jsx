@@ -63,7 +63,7 @@ async function streamRequest(path, body, onEvent) {
       body: JSON.stringify(body)
     });
   } catch (error) {
-    throw new Error(`Cannot reach the Dawn server — is it running? (${error.message})`);
+    throw new Error(`Cannot reach the Dawn server, is it running? (${error.message})`);
   }
 
   const contentType = response.headers.get("content-type") || "";
@@ -257,7 +257,7 @@ function App() {
         </div>
 
         <div className="rail-block">
-          <StatusPill ok={ollamaOk} label={ollamaOk ? "AI model online" : "AI model offline"} />
+          <StatusPill ok={ollamaOk} label={ollamaOk ? "Ollama online" : "Ollama offline"} />
           <button className="icon-button" type="button" onClick={refreshHealth} title="Refresh status">
             <RefreshCw size={18} />
           </button>
@@ -267,8 +267,8 @@ function App() {
           <h4>How it works</h4>
           <ol>
             <li>Paste a website address you own or are allowed to test.</li>
-            <li>Press <strong>Run</strong>. Dawn checks the site safely (it only looks — it never attacks).</li>
-            <li>Read the <strong>AI brief</strong> for what to fix first, backed by the raw evidence.</li>
+            <li>Press <strong>Run</strong>. Dawn checks the site safely (it only looks, it never attacks).</li>
+            <li>Read the <strong>summary</strong> for what to fix first. Each point links back to the raw evidence.</li>
           </ol>
         </div>
 
@@ -279,8 +279,8 @@ function App() {
         <header className="dawn-header simple">
           <h2>Check a website for security issues</h2>
           <p className="view-hint">
-            Dawn safely inspects a site you are authorized to test, then your local AI explains what matters first.
-            It is passive — it never attacks, brute-forces, or exploits.
+            Dawn reads what a site already serves and lists what to fix first. It never attacks, brute-forces or
+            exploits anything, so only point it at sites you own or have permission to test.
           </p>
         </header>
 
@@ -302,8 +302,8 @@ function App() {
             <label className="big-check">
               <input type="checkbox" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} />
               <span>
-                <strong>Explain results with my local AI</strong>
-                <small>{useAi ? `Using ${model}` : "Off — show raw findings only"}</small>
+                <strong>Summarise with a local model</strong>
+                <small>{useAi ? `Using ${model}` : "Off: show raw findings only"}</small>
               </span>
             </label>
 
@@ -311,7 +311,7 @@ function App() {
 
             <button className="primary-button big" type="submit" disabled={running}>
               {running ? <Loader2 className="spin" size={18} /> : <Play size={18} />}
-              {running ? "Running…" : useAi ? "Run scan + AI brief" : "Run scan"}
+              {running ? "Running…" : useAi ? "Run scan" : "Run scan"}
             </button>
 
             <details className="advanced">
@@ -388,7 +388,7 @@ function App() {
                 <>
                   <p className="evidence-note">
                     <ShieldCheck size={13} /> {result.findings.length} finding(s) on{" "}
-                    <strong>{result.finalUrl || result.target}</strong> — each one is observed evidence, not an AI guess.
+                    <strong>{result.finalUrl || result.target}</strong>, each one is observed evidence, not an AI guess.
                   </p>
                   <div className="summary-grid">
                     <SeverityBox label="Critical" value={severityCounts.critical} tone="critical" />
@@ -399,7 +399,7 @@ function App() {
                   </div>
                 </>
               ) : running ? null : (
-                <EmptyState icon={<AlertTriangle size={22} />} text="No results yet — run a scan." />
+                <EmptyState icon={<AlertTriangle size={22} />} text="No results yet. Run a scan." />
               )}
             </div>
 
@@ -407,8 +407,8 @@ function App() {
               <section className="panel ai-brief">
                 <div className="panel-title">
                   <Brain size={18} />
-                  <h3>AI brief</h3>
-                  <span className="tag ai push-right">AI — review against evidence</span>
+                  <h3>Summary</h3>
+                  <span className="tag ai push-right">Written by the local model. Check it against the evidence below.</span>
                 </div>
                 {notes.length > 1 ? (
                   <div className="note-tabs">
@@ -424,7 +424,7 @@ function App() {
                     ))}
                   </div>
                 ) : null}
-                <pre className="markdown-preview">{selectedNoteContent || "No AI brief produced."}</pre>
+                <pre className="markdown-preview">{selectedNoteContent || "The model did not return a summary."}</pre>
               </section>
             ) : null}
 

@@ -84,7 +84,7 @@ export function recommendModels(rawModels) {
   if (!models.length) {
     reason = "No local models found. Pull one with: ollama pull qwen2.5:7b-instruct";
   } else if (rec && !rec.fits) {
-    reason = `All installed models are large for ${totalGB}GB RAM. "${recommended}" is the smallest available — expect slow responses.`;
+    reason = `All installed models are large for ${totalGB}GB RAM. "${recommended}" is the smallest available, expect slow responses.`;
   } else if (rec) {
     reason = `Most capable model (${rec.paramLabel}, ${rec.sizeLabel}) that runs ${rec.comfortable ? "comfortably" : "within"} ${totalGB}GB RAM. Bigger models find deeper issues.`;
   } else {

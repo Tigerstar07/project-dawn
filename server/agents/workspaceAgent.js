@@ -183,7 +183,7 @@ async function writeStep({ dir, question, model, index, noteType, scan, emit }) 
   } catch (error) {
     const note = fallbackNote({ question, index, noteType: selectedNoteType, error: error.message });
     await writeMarkdown(dir, note.fileName, note.content);
-    emit?.("model", `Model unavailable for ${selectedNoteType} note — wrote fallback`, "warning");
+    emit?.("model", `Model unavailable for ${selectedNoteType} note, wrote fallback`, "warning");
   }
 }
 
@@ -249,7 +249,7 @@ export async function runWorkspaceAgent({ rootDir, question, model, sessionId, s
       scanProfile,
       onEvent // stream the scanner's own phase events live
     });
-    emit("scan", `Scan complete — ${scan.findings.length} finding(s)`, "complete");
+    emit("scan", `Scan complete, ${scan.findings.length} finding(s)`, "complete");
 
     await writeMarkdown(dir, `${padIndex(nextIndex)}-passive-scan.md`, renderScanSummary(scan));
     nextIndex += 1;

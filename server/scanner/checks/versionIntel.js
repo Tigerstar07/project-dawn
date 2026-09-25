@@ -1,8 +1,8 @@
-// Version & CVE intelligence — fully passive.
+// Version & CVE intelligence, fully passive.
 // The server already discloses its software versions (Server, X-Powered-By,
 // generator meta). We look those exact versions up against the authoritative
 // end-of-life database (endoflife.date) to tell whether the software is
-// out-of-date or unsupported — the strongest "known-CVE risk" signal you can
+// out-of-date or unsupported, the strongest "known-CVE risk" signal you can
 // get without sending a single payload. Each finding links to the official NVD
 // CVE search for that exact product + version.
 
@@ -76,13 +76,13 @@ async function assess({ key, version, source }) {
     });
     if (response.ok) cycle = matchCycle(await response.json(), version);
   } catch {
-    // endoflife.date unreachable — fall through to the "verify manually" finding.
+    // endoflife.date unreachable, fall through to the "verify manually" finding.
   }
 
   if (!cycle) {
     return {
       id: `version_intel.${key}`,
-      title: `${cfg.label} ${version} disclosed — verify patch level`,
+      title: `${cfg.label} ${version} disclosed, verify patch level`,
       severity: "info",
       tier: "info",
       impact: `${cfg.label} ${version} is exposed. Could not auto-check it against the version database; confirm it is fully patched.`,
@@ -98,7 +98,7 @@ async function assess({ key, version, source }) {
   if (isEol) {
     return {
       id: `version_intel.${key}_eol`,
-      title: `${cfg.label} ${version} is end-of-life — no security patches`,
+      title: `${cfg.label} ${version} is end-of-life, no security patches`,
       severity: "high",
       tier: "exploitable",
       impact: `${cfg.label} ${version} (cycle ${cycle.cycle}) no longer receives security updates, so any new CVE stays permanently unpatched. EOL software is a primary attacker target.`,
@@ -124,7 +124,7 @@ async function assess({ key, version, source }) {
     title: `${cfg.label} ${version} is on the latest patch`,
     severity: "info",
     tier: "info",
-    impact: `${cfg.label} ${version} appears current for its release cycle — good. Disclosing the exact version still helps attackers fingerprint the stack.`,
+    impact: `${cfg.label} ${version} appears current for its release cycle, good. Disclosing the exact version still helps attackers fingerprint the stack.`,
     evidence: `${evidenceBase}. Latest in cycle ${cycle.cycle}: ${latest}.`,
     remediation: `No patch action needed. Optionally suppress the version banner. CVE history: ${nvdLink}`
   };

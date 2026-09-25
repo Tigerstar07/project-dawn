@@ -1,75 +1,63 @@
 # Project Dawn
 
-Project Dawn is a local-first AI workspace and consent-gated passive web security scanner. It combines deterministic evidence collection with a locally hosted Ollama model that summarizes findings without inventing them.
+A website security checker that runs on your own machine. You give it a site you own or have permission to test, and it reads what the site already serves: response headers, cookies, forms, the HTML and the JavaScript bundles. It then lists what it found, how serious each item is and how to fix it. It never sends attack payloads to public sites.
 
-The scanner is intended only for websites you own or are authorized to assess. It does not run exploit payloads against public targets.
+If you have [Ollama](https://ollama.com) running, a local model can write a short summary on top of the findings. The model only sees the evidence the scanner collected and is told not to go beyond it. Without Ollama you still get the full list of findings.
 
-## Highlights
+![Scan results for a local test site](docs/scan.png)
 
-- File-backed AI workspaces that preserve context between model calls.
-- A long-running local agent with checkpoints, compressed memory and a JSONL journal.
-- Ollama integration with streaming output and configurable local models.
-- Passive checks for HTTPS, headers, cookies, forms, mixed content and exposed metadata.
-- Static client-side analysis for dangerous sinks, source maps, API routes and possible secret exposure.
-- Markdown reports with observed evidence and remediation priorities.
-- Guarded shell and project-edit capabilities that are disabled by default.
-- Local/private-target gating for the small set of active lab checks.
+## What it checks
 
-## Run locally
+| Area | Examples |
+| --- | --- |
+| Transport | HTTPS, HSTS, redirects |
+| Headers | CSP, clickjacking protection, referrer and permissions policies, CORS |
+| Cookies and forms | missing `HttpOnly`/`Secure`/`SameSite`, forms posting over HTTP |
+| Page content | mixed content, source maps, sensitive comments, API routes in the bundle |
+| JavaScript | DOM XSS sinks, unguarded `postMessage` handlers, hard-coded keys |
+| Exposed files | `.env`, `.git/config`, database dumps, Swagger and GraphQL endpoints |
+| Versions | server and framework versions checked against end-of-life dates |
+
+A few active checks exist for testing your own lab setup. They only run against `localhost` or private network addresses.
+
+Each finding comes with the raw evidence it was based on, and every scan can be downloaded as a Markdown report.
+
+## Running it
 
 ```bash
 npm ci
-ollama pull dolphin3:8b-llama3.1-q4_K_M
 npm run dev
 ```
 
-Open `http://localhost:4177`.
+Open http://localhost:4177. For summaries, install Ollama and pull a model:
 
-You can choose a different installed Ollama model in the UI or configure `OLLAMA_BASE_URL` for another local endpoint.
+```bash
+ollama pull dolphin3:8b-llama3.1-q4_K_M
+```
+
+Any other installed model can be picked in the UI, and `OLLAMA_BASE_URL` points it at a different Ollama host.
 
 ## Long-running agent
 
-The CLI runner keeps a durable workspace and can continue across many model calls:
+There is also a command-line agent that works through a bigger question in many short model calls, saving each step to a Markdown file so small local models don't lose track:
 
 ```bash
 npm run agent:long -- --goal "Review the scanner architecture and propose improvements" --iterations 25
 ```
 
-Project source edits require the explicit `--allow-project-edits` flag. Shell access requires `--allow-shell`. Environment files, Git metadata, dependencies and generated data remain outside the writable scope.
+It can only edit project files with `--allow-project-edits` and only run shell commands with `--allow-shell`. `.env` files, `.git` and `node_modules` are always off limits.
 
-## Scanner coverage
+## Layout
 
-- Transport security and common security headers
-- Cookie and form-security signals
-- Mixed-content and source-map exposure
-- Client-delivered API routes and sensitive comments
-- DOM XSS sinks and unguarded `postMessage` handlers
-- Hardcoded credential patterns in delivered JavaScript
-- Common accidental exposures such as `.env`, `.git/config`, database dumps, Swagger and GraphQL endpoints
+| Path | Contents |
+| --- | --- |
+| `server/scanner` | the checks and the scan runner |
+| `server/agents` | Ollama client and the file-backed agent loop |
+| `server/reports` | Markdown report output |
+| `src` | React UI |
+| `docs` | architecture and safety notes |
+| `data` | scans, reports and agent workspaces (git-ignored) |
 
-The local model only summarizes deterministic findings. It is instructed to stay within the observed evidence.
+## Use it responsibly
 
-## Architecture
-
-```text
-server/
-  agents/       Ollama client and file-backed workspace loop
-  scanner/      Passive checks and scan orchestration
-  reports/      Markdown report generation
-  utils/        Shared HTTP and file helpers
-src/            React interface
-docs/           Architecture and safety notes
-data/           Local generated workspaces and reports
-```
-
-## Build
-
-```bash
-npm ci
-npm run build
-```
-
-## Responsible use
-
-Use Project Dawn only on systems you own or have written authorization to test. The repository is an educational defensive engineering prototype, not a replacement for a professional security assessment.
-
+Only scan systems you own or have written permission to test. This is a learning project for defensive checks and it doesn't replace a proper security assessment.

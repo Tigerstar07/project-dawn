@@ -2,20 +2,20 @@
 // so the output reads like a pentest report instead of a flat header checklist.
 //
 // Tiers, highest first:
-//   breach      — finding it often means access is already possible (exposed
+//   breach: finding it often means access is already possible (exposed
 //                 secrets/source, leaked credentials). Closest thing a *passive*
 //                 scan can say to "this is a breach."
-//   exploitable — a concrete vulnerability class an attacker could weaponize
+//   exploitable: a concrete vulnerability class an attacker could weaponize
 //                 (XSS sink, injection surface, unsafe CORS).
-//   hardening   — a missing protection. Real, but low standalone risk; it
+//   hardening: a missing protection. Real, but low standalone risk; it
 //                 widens the blast radius of other bugs.
-//   info        — disclosure / fingerprinting that helps an attacker plan.
+//   info: disclosure / fingerprinting that helps an attacker plan.
 
 const RULES = [
   {
     match: /^dangerous_exposure\./,
     tier: "breach",
-    impact: "Sensitive resource is publicly reachable. An attacker who requests this URL can often read secrets, source, or data directly — frequently a straight path to account or server compromise."
+    impact: "Sensitive resource is publicly reachable. An attacker who requests this URL can often read secrets, source, or data directly, frequently a straight path to account or server compromise."
   },
   {
     match: /^secrets\./,
@@ -30,7 +30,7 @@ const RULES = [
   {
     match: /^client_code\.(dom_xss|sink)/,
     tier: "exploitable",
-    impact: "This code can run attacker-controlled input as script in a victim's browser (DOM XSS) — leading to session theft or account takeover. Confirm by tracing the data source on an authorized target."
+    impact: "This code can run attacker-controlled input as script in a victim's browser (DOM XSS), leading to session theft or account takeover. Confirm by tracing the data source on an authorized target."
   },
   {
     match: /^client_code\.postmessage_no_origin/,
@@ -40,7 +40,7 @@ const RULES = [
   {
     match: /^headers\.cors_wildcard_credentials/,
     tier: "exploitable",
-    impact: "Wildcard CORS combined with credentials lets any website read this site's authenticated responses — direct exposure of logged-in user data."
+    impact: "Wildcard CORS combined with credentials lets any website read this site's authenticated responses, direct exposure of logged-in user data."
   },
   {
     match: /^injection\./,
